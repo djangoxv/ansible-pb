@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Install nginx docker container
+      docker:
+        name: docker-nginx
+        image: nginx
+        ports: 80:80
+        state: started
+        volumes:
+        - /tmp/nginx-test:/usr/share/nginx/html
+

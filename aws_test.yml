@@ -1,0 +1,32 @@
+---
+# file: aws_test.yml
+# run: ansible-playbook -i hosts aws_test.yml --vault-password-file=~/.avpw
+- hosts: ansible_tests
+
+  tasks:
+  - include_vars: vault_vars/aws_vault.yml
+  - name: Provision Ubuntu 14.04 AMIs
+    ec2:
+      aws_access_key: "{{ ec2_access_key }}"
+      aws_secret_key: "{{ ec2_secret_key }}"
+      key_name: jeremy
+      instance_type: t2.micro
+      image: ami-d732f0b7
+      group_id: sg-654e5702
+      region: us-west-2
+      wait: true
+      exact_count: 3
+      instance_tags:
+        swarm: mgmt
+      count_tag:
+        swarm: mgmt
+    register: ec2 
+
+#  - name: Add Docker Management Hosts to swarm Group
+#    add_host: hostname={{ item }} groupname=swarm
+#    with_items: tag_swarm_mgmt
+
+#  - name: Wait for SSH to come up
+#    wait_for: host={{ item }} port=22 timeout=320 state=started
+#    with_items: tag_swarm_mgmt
+

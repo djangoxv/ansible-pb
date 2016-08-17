@@ -1,0 +1,23 @@
+---
+
+# Adds docker (>=1.12) to ubuntu machines tagged swarm=mgmt
+
+# file: docker.yml
+# run: ansible-playbook -i ./ec2.py -s docker_apps.yml
+
+- hosts: tag_swarm_mgmt
+  tasks:
+  - name: Add Apt Repo for docker-engine
+    apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present
+
+  - name: Add Apt Key for docker-engine
+    apt_key: keyserver=p80.pool.sks-keyservers.net id=58118E89F3A912897C070ADBF76221572C52609D
+
+  - name: Install Docker
+    apt: name=docker-engine update_cache=yes state=present
+
+  - name: Add Local User ubuntu to Local Group docker 
+    user: name=ubuntu group=docker
+
+  - name: make sure docker is running
+    service: name=docker state=restarted
